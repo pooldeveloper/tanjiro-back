@@ -13,6 +13,13 @@ const app = express();
 //Habilitar carpeta publica
 app.use(express.static('uploads'));
 
+//Habilitar express.json
+app.use(express.json());
+
+app.use(express.urlencoded({
+    extended: true
+}));
+
 const whiteList=[process.env.FRONTEND_URL]
 const corsOptions = {
     origin: (origin, callback) =>{
@@ -23,26 +30,19 @@ const corsOptions = {
             callback(new Error('No permitido por CORS'))
         }
     }
-}
+} 
 
 //Habilitar cors
-app.use(cors(corsOptions));
-// app.use(cors());
+// app.use(cors(corsOptions));
+app.use(cors());
 
 //Conectar DB
 connectDB();
 
-//Habilitar express.json
-app.use(express.json());
-
-app.use(express.urlencoded({
-    extended: true
-}));
+app.use('/', routes());
 
 //Puerto de la app
 const port = process.env.PORT || 4000;
-
-app.use('/', routes());
 
 app.listen(port, '0.0.0.0', () =>{
     console.log(`El servidor funciona en el puerto ${port}`)
