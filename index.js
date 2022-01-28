@@ -10,9 +10,6 @@ const connectDB = require('./config/db');
 //Crear servidor
 const app = express();
 
-//Habilitar carpeta publica
-app.use(express.static('uploads'));
-
 //Habilitar express.json
 app.use(express.json());
 
@@ -33,8 +30,8 @@ const corsOptions = {
 } 
 
 //Habilitar cors
-// app.use(cors(corsOptions));
-app.use(cors());
+app.use(cors(corsOptions));
+// app.use(cors());
 
 //Conectar DB
 connectDB();

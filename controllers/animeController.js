@@ -1,17 +1,8 @@
 const Anime = require('../models/Anime');
 const multer = require('multer');
-const shortid = require('shortid');
 
 const configuracionMulter = {
-    storage: fileStorage = multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, __dirname + '/../uploads/');
-        },
-        filename: (req, file, cb) => {
-            const extension = file.mimetype.split('/')[1];
-            cb(null, `${shortid.generate()}.${extension}`);
-        }
-    }),
+    storage: multer.memoryStorage(),
     fileFilter(req, file, cb) {
         if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
             cb(null, true);
@@ -22,6 +13,7 @@ const configuracionMulter = {
 }
 
 const upload = multer(configuracionMulter).single('poster');
+
 exports.newAnime = async (req, res) => {
     upload(req, res, async function (error) {
         try {
@@ -38,7 +30,7 @@ exports.newAnime = async (req, res) => {
             }
             
             let anime = new Anime(req.body);
-            anime.poster = req.file.filename;
+            anime.poster = req.file.buffer.toString('base64');
             await anime.save();
             res.json({ msg: 'Anime creado exitosamente' });
         } catch (error) {
